@@ -1,3 +1,21 @@
 schema = 3
 
 [mod]
+  [mod."github.com/bwmarrin/discordgo"]
+    version = "v0.28.1"
+    hash = "sha256-QGuV+QA+D2dsZJBndggF0fsNsjcbD8AGfmCrg4igjdM="
+  [mod."github.com/golang/protobuf"]
+    version = "v1.3.1"
+    hash = "sha256-eLr0yrIO2wTtL+LvFKM3styaQSPnZQYSpaDjajBQT7Q="
+  [mod."github.com/gorilla/websocket"]
+    version = "v1.4.2"
+    hash = "sha256-GhBLM/XTm2lFCyDvJbnCLAI2OyYXQV6W+jRPOQ1PdVY="
+  [mod."golang.org/x/crypto"]
+    version = "v0.0.0-20210421170649-83a5a9bb288b"
+    hash = "sha256-/yDFKCgawG9Othmh5y0O3Vx79JH2t4N7ecp1Nr+Li3o="
+  [mod."golang.org/x/sys"]
+    version = "v0.0.0-20201119102817-f84b799fce68"
+    hash = "sha256-EH5wVq9wsiELXlF4f/22eOyOtHrU3XZfTxyXHvCfeVM="
+  [mod."layeh.com/gumble"]
+    version = "v0.0.0-20221205141517-d1df60a3cc14"
+    hash = "sha256-GCCzhD3dQs2TmTXQNkyRq7aRGbqkZ/zOrBN9P47KnMA="
