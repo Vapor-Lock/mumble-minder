@@ -3,13 +3,14 @@ package main
 import (
 	"crypto/tls"
 	"fmt"
-	"github.com/bwmarrin/discordgo"
-	"layeh.com/gumble/gumble"
-	"layeh.com/gumble/gumbleutil"
 	"net"
 	"os"
 	"strings"
 	"time"
+
+	"github.com/bwmarrin/discordgo"
+	"layeh.com/gumble/gumble"
+	"layeh.com/gumble/gumbleutil"
 )
 
 func main() {
@@ -46,17 +47,23 @@ func main() {
 	discord.Open()
 	defer discord.Close()
 
+	err = emptyChannel(discord, TargetChannel)
+	if err != nil {
+		panic(err)
+	}
+
+	userList := getOnline(client, config.Username)
+	message := fmtMessage(userList)
+	m, err := discord.ChannelMessageSend(TargetChannel, message)
+	if err != nil {
+		panic(err)
+	}
+
 	go func(discord *discordgo.Session) {
-		for _ = range time.Tick(time.Minute) {
-			var userList []string
-			for _, v := range client.Users {
-				userList = append(userList, v.Name)
-			}
-
-			message := strings.Join(userList, "\n")
-			message = fmt.Sprintf("```%s```", message)
-
-			discord.ChannelMessageSend(TargetChannel, message)
+		for range time.Tick(time.Minute) {
+			userList := getOnline(client, config.Username)
+			message := fmtMessage(userList)
+			discord.ChannelMessageEdit(TargetChannel, m.ID, message)
 		}
 	}(discord)
 
@@ -65,4 +72,38 @@ func main() {
 			os.Exit(0)
 		}
 	}
+}
+
+func emptyChannel(discord *discordgo.Session, targetChannel string) error {
+	messages, err := discord.ChannelMessages(targetChannel, 100, "", "", "")
+	if err != nil {
+		return err
+	}
+	if len(messages) > 0 {
+		var mIDs []string
+		for _, v := range messages {
+			mIDs = append(mIDs, v.ID)
+		}
+		err = discord.ChannelMessagesBulkDelete(targetChannel, mIDs)
+		if err != nil {
+			return err
+		}
+	}
+	return nil
+}
+
+func getOnline(mumble *gumble.Client, botUser string) []string {
+	var userList []string
+	for _, v := range mumble.Users {
+		if !strings.EqualFold(v.Name, botUser) {
+			userList = append(userList, v.Name)
+		}
+	}
+	return userList
+}
+
+func fmtMessage(userList []string) string {
+	message := strings.Join(userList, "\n")
+	message = fmt.Sprintf("```%s```", message)
+	return message
 }

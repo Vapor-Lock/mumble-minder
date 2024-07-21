@@ -30,3 +30,4 @@ go.work
 /gomod2nix-template
 .direnv
 .envrc
+.env
