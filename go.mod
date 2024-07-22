@@ -4,6 +4,7 @@ go 1.23rc2
 
 require (
 	github.com/bwmarrin/discordgo v0.28.1
+	github.com/xlab/treeprint v1.2.0
 	layeh.com/gumble v0.0.0-20221205141517-d1df60a3cc14
 )
 

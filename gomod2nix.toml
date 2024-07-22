@@ -10,6 +10,9 @@ schema = 3
   [mod."github.com/gorilla/websocket"]
     version = "v1.4.2"
     hash = "sha256-GhBLM/XTm2lFCyDvJbnCLAI2OyYXQV6W+jRPOQ1PdVY="
+  [mod."github.com/xlab/treeprint"]
+    version = "v1.2.0"
+    hash = "sha256-g85HyWGLZuD/TFXZzmXT+u9TA1xIT5escUVhnofsYQI="
   [mod."golang.org/x/crypto"]
     version = "v0.0.0-20210421170649-83a5a9bb288b"
     hash = "sha256-/yDFKCgawG9Othmh5y0O3Vx79JH2t4N7ecp1Nr+Li3o="

@@ -9,6 +9,7 @@ import (
 	"time"
 
 	"github.com/bwmarrin/discordgo"
+	"github.com/xlab/treeprint"
 	"layeh.com/gumble/gumble"
 	"layeh.com/gumble/gumbleutil"
 )
@@ -52,8 +53,8 @@ func main() {
 		panic(err)
 	}
 
-	userList := getOnline(client, config.Username)
-	message := fmtMessage(userList)
+	message := getOnline(client, config.Username)
+
 	m, err := discord.ChannelMessageSend(TargetChannel, message)
 	if err != nil {
 		panic(err)
@@ -61,8 +62,7 @@ func main() {
 
 	go func(discord *discordgo.Session) {
 		for range time.Tick(time.Minute) {
-			userList := getOnline(client, config.Username)
-			message := fmtMessage(userList)
+			message := getOnline(client, config.Username)
 			discord.ChannelMessageEdit(TargetChannel, m.ID, message)
 		}
 	}(discord)
@@ -92,18 +92,24 @@ func emptyChannel(discord *discordgo.Session, targetChannel string) error {
 	return nil
 }
 
-func getOnline(mumble *gumble.Client, botUser string) []string {
-	var userList []string
-	for _, v := range mumble.Users {
-		if !strings.EqualFold(v.Name, botUser) {
-			userList = append(userList, v.Name)
-		}
-	}
-	return userList
+func getOnline(client *gumble.Client, botUser string) string {
+	rootChan := client.Channels.Find()
+	tree := treeprint.New()
+	treeRoot := tree.AddBranch(rootChan.Name)
+	addChildren(treeRoot, rootChan, botUser)
+	//[TODO] implement a completed chan to avoid the sleeps
+	time.Sleep(5 * time.Second)
+	return fmt.Sprintf("```%v\n````Last Update:` <t:%v:R>\n", tree.String(), time.Now().Unix())
 }
 
-func fmtMessage(userList []string) string {
-	message := strings.Join(userList, "\n")
-	message = fmt.Sprintf("```%s```", message)
-	return message
+func addChildren(node treeprint.Tree, channel *gumble.Channel, botUser string) {
+	for _, channel := range channel.Children {
+		child := node.AddBranch(channel.Name)
+		for _, user := range channel.Users {
+			if !strings.EqualFold(user.Name, botUser) {
+				child.AddNode(user.Name)
+			}
+		}
+		go addChildren(child, channel, botUser)
+	}
 }
