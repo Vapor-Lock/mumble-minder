@@ -1,0 +1,6 @@
+services:
+  mumble-minder:
+    build: .
+    restart: always
+    env_file:
+      - ./.env
