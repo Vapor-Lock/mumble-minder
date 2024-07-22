@@ -17,6 +17,7 @@ import (
 func main() {
 	BotToken := os.Getenv("MUMBLE_MINDER_BOT_TOKEN")
 	TargetChannel := os.Getenv("MUMBLE_MINDER_BOT_CHANNEL")
+	mumbleAddress := os.Getenv("MUMBLE_MINDER_MUMBLE_HOST")
 
 	keepAlive := make(chan bool)
 	config := gumble.NewConfig()
@@ -33,7 +34,7 @@ func main() {
 		InsecureSkipVerify: true,
 	}
 
-	client, err := gumble.DialWithDialer(new(net.Dialer), "mumble.vaporlock.space:64738", config, tlsConfig)
+	client, err := gumble.DialWithDialer(new(net.Dialer), mumbleAddress, config, tlsConfig)
 	if err != nil {
 		panic(err)
 	}
